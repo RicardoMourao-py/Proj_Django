@@ -1,0 +1,65 @@
+{% extends "notes/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="appbar">
+  <img src="{% static 'notes/img/logo-getit.png' %}" class="logo" />
+  <span class="subtitle">Como o Post-it, mas com outro verbo</span>
+</div>
+
+<main class="container">
+
+  <form class="form-card" method="post" id="form-container">
+      {% csrf_token %}
+      <input
+          required
+          class="form-card-title"
+          type="text"
+          name="title"
+          placeholder="Título"
+        />
+        <textarea
+          required
+          class="autoresize"
+          name="content"
+          placeholder="Digite o conteúdo..."
+        ></textarea>
+        
+        <button class="btn" type="submit">Criar</button>   
+  </form>
+
+ <ul class="card-container">
+    {% for note in notes %}
+      <!-- {% block notes %}{% endblock %} -->
+      <div class="card" key="{{ note.id }}">
+        <form method="post" action="{% url 'update' note.id %}">
+          {% csrf_token %}
+          <button class="card-update-button" type="submit" id="{{ note.id }}">
+            <i class="fa fa-save"></i>
+          </button>
+          <input
+            value="{{ note.title }}"
+            name="title"
+            class="card-title inputcard"
+            key="{{ note.id }}"
+          />
+          <textarea
+            value="{{ note.content }}"
+            name="content"
+            class="card-content inputcard"
+            key="{{ note.id }}"
+          >
+      {{ note.content }}</textarea
+          >
+        </form>
+        <form class="card_delete" method="post" action="{% url 'delete' note.id %}">
+          {% csrf_token %}
+          <input type="image" src="{% static 'notes/img/x.png' %}" class="x"/>
+        </form>
+      </div>
+    {% endfor %}
+ </ul>
+
+</main>
+<script type="text/javascript" src="{% static 'script/getit.js' %}"></script>
+{% endblock %}
